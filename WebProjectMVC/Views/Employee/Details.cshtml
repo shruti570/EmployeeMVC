@@ -1,0 +1,58 @@
+﻿@model WebProjectMVC.Models.Employee
+
+<h2>Employee Details</h2>
+
+<div class="row">
+
+    <div class="col-md-6 mb-3">
+        <label>Employee Name</label>
+        <input asp-for="Empname" class="form-control" readonly />
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label>Employee Code</label>
+        <input asp-for="EmpCode" class="form-control" readonly />
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label>Reporting Person</label>
+        <input asp-for="ReportingPersonName" class="form-control" readonly />
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label>Department</label>
+        <input asp-for="DepartmentName" class="form-control" readonly />
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label>Created By</label>
+        <input asp-for="CreatedBY" class="form-control" readonly />
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label>Modified By</label>
+        <input asp-for="ModifiedBY" class="form-control" readonly />
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label>Salary</label>
+        <input asp-for="Salary" class="form-control" readonly />
+    </div>
+
+@*     <div class="col-md-6 mb-3">
+        <label>Phone Number</label>
+        <input asp-for="PhoneNumber" class="form-control" readonly />
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label>Email</label>
+        <input asp-for="Email" class="form-control" readonly />
+    </div> *@
+
+</div>
+
+<a asp-controller="Employee"
+   asp-action="Index"
+   class="btn btn-secondary">
+    Back
+</a>
