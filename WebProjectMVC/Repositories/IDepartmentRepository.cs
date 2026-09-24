@@ -7,6 +7,8 @@ namespace WebProjectMVC.Repositories
     {
         Task<IEnumerable<Employee>> GetDeptAsync();
         Task<Employee?> GetDeptByIdAsync(int slNo);
+
         Task<IEnumerable<Department>> GetAllAsync();
+
     }
 }

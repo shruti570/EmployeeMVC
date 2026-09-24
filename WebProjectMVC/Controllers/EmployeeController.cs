@@ -116,9 +116,9 @@ namespace WebProjectMVC.Controllers
         private async Task PopulateDropdownsAsync()
         {
             var employees = await _repository.GetAllAsync();
-ViewBag.Employees = new SelectList(employees, "SlNo", "Empname");
+            ViewBag.Employees = new SelectList(employees, "SlNo", "Empname");
 
-            var departments = await _departmentRepo.GetDeptAsync();
+            var departments = await _departmentRepo.GetAllAsync();
             ViewBag.Departments = new SelectList(departments, "Id", "Name");
         }
 

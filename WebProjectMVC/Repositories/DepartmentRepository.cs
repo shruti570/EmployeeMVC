@@ -38,7 +38,7 @@ namespace WebProjectMVC.Repositories
         {
             using var connection = CreateConnection();
             return await connection.QueryAsync<Department>(
-                "usp_GetDepartment",
+                "usp_GetDept",
                 commandType: CommandType.StoredProcedure);
         }
     }

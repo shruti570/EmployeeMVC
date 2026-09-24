@@ -37,7 +37,7 @@ namespace WebProjectMVC.Models
         public string ReportingPersonName { get; set; }
 
         [Display(Name = "Department")]
-        public string Deptname { get; set; }
+        public string DepartmentName { get; set; }
 
         public string lmodifyby { get; set; }
 
