@@ -1,0 +1,35 @@
+﻿@model WebProjectMVC.Models.Employee
+
+<div class="mb-3">
+    <label asp-for="Empname" class="form-label">Employee Name</label>
+    <input asp-for="Empname" class="form-control" />
+    <span asp-validation-for="Empname" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="EmpCode" class="form-label">Employee Code</label>
+    <input asp-for="EmpCode" class="form-control" />
+    <span asp-validation-for="EmpCode" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="ReportingPersonId" class="form-label">Reporting Person</label>
+    <select asp-for="ReportingPersonId" class="form-control" asp-items="(SelectList)ViewBag.Employees">
+        <option value="">-- Select --</option>
+    </select>
+    <span asp-validation-for="ReportingPersonId" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="DepartmentId" class="form-label">Department</label>
+    <select asp-for="DepartmentId" class="form-control" asp-items="(SelectList)ViewBag.Departments">
+        <option value="">-- Select --</option>
+    </select>
+    <span asp-validation-for="DepartmentId" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Salary" class="form-label">Salary</label>
+    <input asp-for="Salary" class="form-control" />
+    <span asp-validation-for="Salary" class="text-danger"></span>
+</div>

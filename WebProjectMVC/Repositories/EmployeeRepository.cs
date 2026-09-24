@@ -19,10 +19,39 @@ namespace WebProjectMVC.Repositories
         public async Task<IEnumerable<Employee>> GetAllAsync()
         {
             using var connection = CreateConnection();
-            return await connection.QueryAsync<Employee>(
+
+            var employees = await connection.QueryAsync<Employee>(
                 "usp_GetEmployee",
                 commandType: CommandType.StoredProcedure);
+
+            var departments = await connection.QueryAsync<dynamic>(
+                "usp_GetDepartment",
+                commandType: CommandType.StoredProcedure);
+
+            var departmentMap = new Dictionary<int, string>();
+            foreach (var dept in departments)
+            {
+                var row = (IDictionary<string, object>)dept;
+                if (row.ContainsKey("DeptId") && row["DeptId"] != null)
+                {
+                    int id = Convert.ToInt32(row["DeptId"]);
+                    string name = row.ContainsKey("DeptName") && row["DeptName"] != null ? row["DeptName"].ToString(): string.Empty;
+
+                    departmentMap[id] = name;
+                }
+            }
+
+            foreach (var emp in employees)
+            {
+                if (departmentMap.TryGetValue(emp.DepartmentId, out var deptName))
+                {
+                    emp.Deptname = deptName;
+                }
+            }
+
+            return employees;
         }
+
         public async Task<Employee?> GetByIdAsync(int slNo)
         {
             using var connection = CreateConnection();
@@ -58,7 +87,21 @@ namespace WebProjectMVC.Repositories
                 emp.SlNo,
                 emp.DepartmentId,
                 emp.ReportingPersonId,
-              
+            };
+            return await connection.ExecuteAsync(
+                "usp_UpdateEmployee",
+                parameters,
+                commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<int> UpdateApiAsync(int SlNo, int DepartmentId, int ReportingPersonId)
+        {
+            using var connection = CreateConnection();
+            var parameters = new
+            {
+                SlNo,
+                DepartmentId,
+                ReportingPersonId,
             };
             return await connection.ExecuteAsync(
                 "usp_UpdateEmployee",

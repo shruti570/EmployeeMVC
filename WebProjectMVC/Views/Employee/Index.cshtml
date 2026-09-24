@@ -18,7 +18,9 @@
 
     .DataSource(ds => ds.Mvc()
         .Controller("Employee")
-        .LoadAction("GetEmployees"))
+        .LoadAction("GetEmployees")
+        .LoadMethod("POST"))
+       
 
     .KeyExpr("SlNo")
 
@@ -60,7 +62,7 @@
             .Caption("Reporting Person")
             .DataType(GridColumnDataType.String);
 
-        columns.AddFor(m => m.DepartmentName)
+        columns.AddFor(m => m.DepartmentId)
             .Caption("Department")
             .DataType(GridColumnDataType.String);
 
