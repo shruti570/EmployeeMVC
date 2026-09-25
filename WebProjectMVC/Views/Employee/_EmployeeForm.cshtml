@@ -1,35 +1,79 @@
 ﻿@model WebProjectMVC.Models.Employee
 
-<div class="mb-3">
-    <label asp-for="Empname" class="form-label">Employee Name</label>
-    <input asp-for="Empname" class="form-control" />
-    <span asp-validation-for="Empname" class="text-danger"></span>
+<!-- Row 1 -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div style="max-width: 250px; width: 100%;">
+        @(Html.DevExtreme().TextBoxFor(x => x.Empname)
+            .ID("Empname")
+            .Label("Employee Name*")
+            .Placeholder("Enter employee name")
+            .StylingMode(EditorStylingMode.Outlined)
+            .Width("100%")
+            .ShowClearButton(true)
+            .ValidationRules(v => { v.AddRequired().Message("Employee name is required"); })
+        )
+    </div>
+    <div style="max-width: 250px; width: 100%;">
+        @(Html.DevExtreme().TextBoxFor(x => x.EmpCode)
+            .ID("EmpCode")
+            .Label("Employee Code*")
+            .Placeholder("Enter employee code")
+            .StylingMode(EditorStylingMode.Outlined)
+            .Width("100%")
+            .ShowClearButton(true)
+            .ValidationRules(v => { v.AddRequired().Message("Employee code is required"); })
+        )
+    </div>
+    <div></div>
+    <div></div>
 </div>
 
-<div class="mb-3">
-    <label asp-for="EmpCode" class="form-label">Employee Code</label>
-    <input asp-for="EmpCode" class="form-control" />
-    <span asp-validation-for="EmpCode" class="text-danger"></span>
+<!-- Row 2 -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+    <div style="max-width: 320px; width: 100%;">
+        @(Html.DevExtreme().SelectBoxFor(x => x.ReportingPersonId)
+            .ID("ReportingPersonId")
+            .Label("Reporting Person")
+            .Placeholder("Select reporting person")
+            .SearchEnabled(true)
+            .DataSource(ds => ds.Mvc().Controller("Employee").LoadAction("GetReportingPersons").Key("id"))
+            .DisplayExpr("name")
+            .ValueExpr("id")
+            .StylingMode(EditorStylingMode.Outlined)
+            .Width("100%")
+            .ShowClearButton(true)
+        )
+    </div>
+    <div style="max-width: 320px; width: 100%;">
+        @(Html.DevExtreme().SelectBoxFor(x => x.DepartmentId)
+            .ID("DepartmentId")
+            .Label("Department")
+            .Placeholder("Select department")
+            .SearchEnabled(true)
+            .DataSource(ds => ds.Mvc().Controller("Employee").LoadAction("GetDepartments").Key("id"))
+            .DisplayExpr("name")
+            .ValueExpr("id")
+            .StylingMode(EditorStylingMode.Outlined)
+            .Width("100%")
+            .ShowClearButton(true)
+        )
+    </div>
+    <div></div>
 </div>
 
-<div class="mb-3">
-    <label asp-for="ReportingPersonId" class="form-label">Reporting Person</label>
-    <select asp-for="ReportingPersonId" class="form-control" asp-items="(SelectList)ViewBag.Employees">
-        <option value="">-- Select --</option>
-    </select>
-    <span asp-validation-for="ReportingPersonId" class="text-danger"></span>
-</div>
-
-<div class="mb-3">
-    <label asp-for="DepartmentId" class="form-label">Department</label>
-    <select asp-for="DepartmentId" class="form-control" asp-items="(SelectList)ViewBag.Departments">
-        <option value="">-- Select --</option>
-    </select>
-    <span asp-validation-for="DepartmentId" class="text-danger"></span>
-</div>
-
-<div class="mb-3">
-    <label asp-for="Salary" class="form-label">Salary</label>
-    <input asp-for="Salary" class="form-control" />
-    <span asp-validation-for="Salary" class="text-danger"></span>
+<!-- Row 3 -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+    <div style="max-width: 320px; width: 100%;">
+        @(Html.DevExtreme().NumberBoxFor(x => x.Salary)
+            .ID("Salary")
+            .Label("Salary")
+            .Placeholder("Enter salary")
+            .StylingMode(EditorStylingMode.Outlined)
+            .Width("100%")
+            .ShowClearButton(true)
+            .Min(0)
+        )
+    </div>
+    <div></div>
+    <div></div>
 </div>

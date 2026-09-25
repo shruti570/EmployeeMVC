@@ -90,12 +90,8 @@ namespace WebProjectMVC.Repositories
                 commandType: CommandType.StoredProcedure);
         }
 
-        public async Task<IEnumerable<Employee>> GetReportingPerson(int slNo)
-        {
-            using var connection = CreateConnection();
-            return await connection.QueryAsync<Employee>(
-                "usp_GetReportigPerson",
-                commandType: CommandType.StoredProcedure);
-        }
+        
+
+
     }
 }

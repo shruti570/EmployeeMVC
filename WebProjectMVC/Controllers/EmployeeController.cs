@@ -1,8 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using WebProjectMVC.Models;
 using WebProjectMVC.Repositories;
 
@@ -13,24 +12,82 @@ namespace WebProjectMVC.Controllers
         private readonly IEmployeeRepository _repository;
         private readonly IDepartmentRepository _departmentRepo;
 
-        public EmployeeController(IEmployeeRepository repository, IDepartmentRepository departmentRepo)
+        public EmployeeController(
+            IEmployeeRepository repository,
+            IDepartmentRepository departmentRepo)
         {
             _repository = repository;
             _departmentRepo = departmentRepo;
         }
 
+
+        // ==============================
+        // Employee List
+        // ==============================
         public IActionResult Index()
         {
             return View();
         }
 
+
+        // ==============================
+        // Get Employees - DevExtreme Grid
+        // ==============================
         [HttpPost]
-        public async Task<ActionResult> GetEmployees(DataSourceLoadOptions loadOptions)
+        public async Task<ActionResult> GetEmployees(
+            DataSourceLoadOptions loadOptions)
         {
             var employees = await _repository.GetAllAsync();
-            return Json(DataSourceLoader.Load(employees, loadOptions));
+
+            return Json(
+                DataSourceLoader.Load(employees, loadOptions)
+            );
         }
 
+
+        // ==============================
+        // Get Reporting Persons
+        // ==============================
+        [HttpGet]
+        public async Task<IActionResult> GetReportingPersons()
+        {
+            var employees = await _repository.GetAllAsync();
+
+            var reportingPersons = employees
+                .Select(x => new
+                {
+                    id = x.SlNo,
+                    name = x.Empname
+                })
+                .ToList();
+
+            return Json(reportingPersons);
+        }
+
+
+        // ==============================
+        // Get Departments
+        // ==============================
+        [HttpGet]
+        public async Task<IActionResult> GetDepartments()
+        {
+            var departments = await _departmentRepo.GetAllAsync();
+
+            var result = departments
+                .Select(x => new
+                {
+                    id = x.Id,
+                    name = x.Name
+                })
+                .ToList();
+
+            return Json(result);
+        }
+
+
+        // ==============================
+        // Details
+        // ==============================
         [HttpPost]
         public async Task<IActionResult> Details(int id)
         {
@@ -44,89 +101,156 @@ namespace WebProjectMVC.Controllers
             return View(employee);
         }
 
+
+        // ==============================
+        // Create - GET
+        // ==============================
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            await PopulateDropdownsAsync();
             return View(new Employee());
         }
 
+
+        // ==============================
+        // Create - POST
+        // ==============================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Employee employee)
         {
             if (!ModelState.IsValid)
             {
-                return await ReturnCreateErrorViewAsync(employee, "Please fill all required fields correctly.");
+                return await ReturnCreateErrorViewAsync(
+                    employee,
+                    "Please fill all required fields correctly."
+                );
             }
 
-            if (!string.IsNullOrWhiteSpace(employee.EmpCode) && employee.EmpCode.Length < 3)
+
+            // Employee Code validation
+            if (!string.IsNullOrWhiteSpace(employee.EmpCode)
+                && employee.EmpCode.Length < 3)
             {
-                ModelState.AddModelError("EmpCode", "Employee Code must be at least 3 characters long.");
-                return await ReturnCreateErrorViewAsync(employee, "Invalid Employee Code length.");
+                ModelState.AddModelError(
+                    "EmpCode",
+                    "Employee Code must be at least 3 characters long."
+                );
+
+                return await ReturnCreateErrorViewAsync(
+                    employee,
+                    "Invalid Employee Code length."
+                );
             }
 
+
+            // Salary validation
             if (employee.Salary <= 0)
             {
-                ModelState.AddModelError("Salary", "Salary must be a positive value greater than zero.");
-                return await ReturnCreateErrorViewAsync(employee, "Invalid salary entry.");
+                ModelState.AddModelError(
+                    "Salary",
+                    "Salary must be a positive value greater than zero."
+                );
+
+                return await ReturnCreateErrorViewAsync(
+                    employee,
+                    "Invalid salary entry."
+                );
             }
 
+
+            // Created By
             employee.CreatedBY = "ShrutiMOre";
 
-            var rowsAffected = await _repository.CreateAsync(employee);
+
+            var rowsAffected =
+                await _repository.CreateAsync(employee);
+
 
             if (rowsAffected > 0)
             {
-                TempData["SuccessMessage"] = "Employee profile configured successfully!";
+                TempData["SuccessMessage"] =
+                    "Employee profile configured successfully!";
+
                 return RedirectToAction(nameof(Index));
             }
 
-            return await ReturnCreateErrorViewAsync(employee, "Failed to register employee record in database systems.");
+
+            return await ReturnCreateErrorViewAsync(
+                employee,
+                "Failed to register employee record in database systems."
+            );
         }
 
+
+        // ==============================
+        // Edit - GET
+        // ==============================
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var employee = await _repository.GetByIdAsync(id);
+            var employee =
+                await _repository.GetByIdAsync(id);
 
             if (employee == null)
             {
                 return NotFound();
             }
 
-            await PopulateDropdownsAsync();
             return View(employee);
         }
 
+
+        // ==============================
+        // Edit - POST
+        // ==============================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Employee employee)
         {
             if (!ModelState.IsValid)
             {
-                await PopulateDropdownsAsync();
                 return View(employee);
             }
 
             await _repository.UpdateAsync(employee);
+
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task PopulateDropdownsAsync()
-        {
-            var employees = await _repository.GetAllAsync();
-            ViewBag.Employees = new SelectList(employees, "SlNo", "Empname");
 
-            var departments = await _departmentRepo.GetAllAsync();
-            ViewBag.Departments = new SelectList(departments, "Id", "Name");
+        // ==============================
+        // Delete
+        // ==============================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result =
+                await _repository.DeleteAsync(id);
+
+            if (result > 0)
+            {
+                TempData["SuccessMessage"] =
+                    "Employee deleted successfully.";
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
-        private async Task<IActionResult> ReturnCreateErrorViewAsync(Employee model, string errorMessage)
+
+        // ==============================
+        // Create Error View
+        // ==============================
+        private async Task<IActionResult>
+            ReturnCreateErrorViewAsync(
+                Employee model,
+                string errorMessage)
         {
             TempData["ErrorMessage"] = errorMessage;
-            await PopulateDropdownsAsync();
+
             return View("Create", model);
         }
     }
 }
+
