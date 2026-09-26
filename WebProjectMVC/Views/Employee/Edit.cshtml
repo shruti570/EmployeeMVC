@@ -1,103 +1,26 @@
 ﻿@model WebProjectMVC.Models.Employee
 
-<h2>Edit Employee</h2>
+@{
+    // Check if the page is being opened in a read-only View mode from the controller
+    bool isViewMode = ViewBag.IsViewMode ?? false;
+}
+
+<h2>@(isViewMode ? "View Employee Details" : "Edit Employee")</h2>
 
 <form asp-controller="Employee" asp-action="Edit" method="post">
 
-    <input type="hidden" asp-for="SlNo" />
+    <!-- This calls your reusable layout form cleanly -->
+    <partial name="_EmployeeForm" model="Model" />
 
-    <div class="row">
-
-        <!-- Employee Name - READ ONLY -->
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Employee Name</label>
-            <input asp-for="Empname"
-                   class="form-control"
-                   readonly />
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Employee Code</label>
-            <input asp-for="EmpCode"
-                   class="form-control"
-                   readonly />
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Reporting Person</label>
-
-            <select asp-for="ReportingPersonName"
-                    class="form-control">
-
-                <option value="">-- Select Reporting Person --</option>
-
-                <option value="1">Juhi</option>
-                <option value="2">Pradeep</option>
-                <option value="3">Shruti More</option>
-                <option value="4">Pankaj</option>
-
-
-            </select>
-        </div>
-
-        <!-- Department - EDITABLE -->
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Department</label>
-
-            <select asp-for="DepartmentId"
-                    class="form-control">
-
-                <option value="">-- Select Department --</option>
-
-                <!-- Temporary options -->
-                <option value="1">Department 1</option>
-                <option value="2">Department 2</option>
-                <option value="3">Department 3</option>
-
-            </select>
-        </div>
-
-        <!-- Salary - READ ONLY -->
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Salary</label>
-
-            <input asp-for="Salary"
-                   class="form-control"
-                   readonly />
-        </div>
-
-        <!-- Created By - READ ONLY -->
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Created By</label>
-
-            <input asp-for="CreatedBY"
-                   class="form-control"
-                   readonly />
-        </div>
-
-        <!-- Modified By - READ ONLY -->
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Modified By</label>
-
-            <input asp-for="ModifiedBY"
-                   class="form-control"
-                   readonly />
-        </div>
-
+    <div class="mt-4">
+        <!-- FIXED: Only show the submit Save button if we are NOT in View mode -->
+        @if (!isViewMode)
+        {
+            <button type="submit" class="btn btn-primary">Save</button>
+        }
+        <a asp-controller="Employee" asp-action="Index" class="btn btn-secondary">
+            @(isViewMode ? "Back to List" : "Cancel")
+        </a>
     </div>
 
-    <a asp-controller="Employee"
-       asp-action="Index"
-       class="btn btn-secondary">
-        Save
-    </a>
-
-    <a asp-controller="Employee"
-       asp-action="Index"
-       class="btn btn-secondary">
-        Cancel
-    </a>
-
 </form>
-
-      @*   helloo *@

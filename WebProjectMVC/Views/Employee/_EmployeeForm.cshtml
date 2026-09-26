@@ -1,79 +1,62 @@
 ﻿@model WebProjectMVC.Models.Employee
 
-<!-- Row 1 -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div style="max-width: 250px; width: 100%;">
-        @(Html.DevExtreme().TextBoxFor(x => x.Empname)
-            .ID("Empname")
-            .Label("Employee Name*")
-            .Placeholder("Enter employee name")
-            .StylingMode(EditorStylingMode.Outlined)
-            .Width("100%")
-            .ShowClearButton(true)
-            .ValidationRules(v => { v.AddRequired().Message("Employee name is required"); })
-        )
-    </div>
-    <div style="max-width: 250px; width: 100%;">
-        @(Html.DevExtreme().TextBoxFor(x => x.EmpCode)
-            .ID("EmpCode")
-            .Label("Employee Code*")
-            .Placeholder("Enter employee code")
-            .StylingMode(EditorStylingMode.Outlined)
-            .Width("100%")
-            .ShowClearButton(true)
-            .ValidationRules(v => { v.AddRequired().Message("Employee code is required"); })
-        )
-    </div>
-    <div></div>
-    <div></div>
-</div>
+@{
+    bool isViewMode = ViewBag.IsViewMode ?? false;
+}
 
-<!-- Row 2 -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-    <div style="max-width: 320px; width: 100%;">
-        @(Html.DevExtreme().SelectBoxFor(x => x.ReportingPersonId)
-            .ID("ReportingPersonId")
-            .Label("Reporting Person")
-            .Placeholder("Select reporting person")
-            .SearchEnabled(true)
-            .DataSource(ds => ds.Mvc().Controller("Employee").LoadAction("GetReportingPersons").Key("id"))
-            .DisplayExpr("name")
-            .ValueExpr("id")
-            .StylingMode(EditorStylingMode.Outlined)
-            .Width("100%")
-            .ShowClearButton(true)
-        )
-    </div>
-    <div style="max-width: 320px; width: 100%;">
-        @(Html.DevExtreme().SelectBoxFor(x => x.DepartmentId)
-            .ID("DepartmentId")
-            .Label("Department")
-            .Placeholder("Select department")
-            .SearchEnabled(true)
-            .DataSource(ds => ds.Mvc().Controller("Employee").LoadAction("GetDepartments").Key("id"))
-            .DisplayExpr("name")
-            .ValueExpr("id")
-            .StylingMode(EditorStylingMode.Outlined)
-            .Width("100%")
-            .ShowClearButton(true)
-        )
-    </div>
-    <div></div>
-</div>
+<input type="hidden" asp-for="SlNo" />
 
-<!-- Row 3 -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-    <div style="max-width: 320px; width: 100%;">
-        @(Html.DevExtreme().NumberBoxFor(x => x.Salary)
-            .ID("Salary")
-            .Label("Salary")
-            .Placeholder("Enter salary")
-            .StylingMode(EditorStylingMode.Outlined)
-            .Width("100%")
-            .ShowClearButton(true)
-            .Min(0)
-        )
+<div class="row">
+
+    <!-- Employee Name - READ ONLY -->
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Employee Name</label>
+        <input asp-for="Empname" class="form-control" readonly />
     </div>
-    <div></div>
-    <div></div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Employee Code</label>
+        <input asp-for="EmpCode" class="form-control" readonly />
+    </div>
+
+    <!-- Reporting Person - POPULATED FROM BACKEND SP -->
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Reporting Person</label>
+        <select asp-for="ReportingPerson" 
+                asp-items="(List<SelectListItem>)ViewBag.ReportingPersons" 
+                class="form-control" 
+                disabled="@isViewMode">
+            <option value="">-- Select Reporting Person --</option>
+        </select>
+    </div>
+
+    <!-- Department - POPULATED FROM BACKEND SP -->
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Department</label>
+        <select asp-for="DepartmentId" 
+                asp-items="(List<SelectListItem>)ViewBag.Departments" 
+                class="form-control" 
+                disabled="@isViewMode">
+            <option value="">-- Select Department --</option>
+        </select>
+    </div>
+
+    <!-- Salary - READ ONLY -->
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Salary</label>
+        <input asp-for="Salary" class="form-control" readonly />
+    </div>
+
+    <!-- Created By - READ ONLY -->
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Created By</label>
+        <input asp-for="CreatedBY" class="form-control" readonly />
+    </div>
+
+    <!-- Modified By - READ ONLY -->
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Modified By</label>
+        <input asp-for="ModifiedBY" class="form-control" readonly />
+    </div>
+
 </div>

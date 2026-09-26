@@ -33,11 +33,11 @@ namespace WebProjectMVC.Models
 
         public string ModifiedBY { get; set; }
 
-        [Display(Name = "Reporting Person")]
-        public string ReportingPersonName { get; set; }
+       
+        public string ReportingPerson { get; set; }
 
-        [Display(Name = "Department")]
-        public string DepartmentName { get; set; }
+       
+        public string Deptname { get; set; }
 
         public string lmodifyby { get; set; }
 

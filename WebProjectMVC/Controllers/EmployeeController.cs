@@ -1,5 +1,4 @@
-﻿
-using DevExtreme.AspNet.Data;
+﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using WebProjectMVC.Models;
@@ -34,14 +33,11 @@ namespace WebProjectMVC.Controllers
         // Get Employees - DevExtreme Grid
         // ==============================
         [HttpPost]
-        public async Task<ActionResult> GetEmployees(
-            DataSourceLoadOptions loadOptions)
+        public async Task<ActionResult> GetEmployees(DataSourceLoadOptions loadOptions)
         {
             var employees = await _repository.GetAllAsync();
 
-            return Json(
-                DataSourceLoader.Load(employees, loadOptions)
-            );
+            return Json(DataSourceLoader.Load(employees, loadOptions));
         }
 
 
@@ -86,9 +82,9 @@ namespace WebProjectMVC.Controllers
 
 
         // ==============================
-        // Details
+        // Details (View Mode by SlNo)
         // ==============================
-        [HttpPost]
+        [HttpGet] // FIXED: Changed to HttpGet to receive standard grid hyperlink anchor requests
         public async Task<IActionResult> Details(int id)
         {
             var employee = await _repository.GetByIdAsync(id);
@@ -98,7 +94,11 @@ namespace WebProjectMVC.Controllers
                 return NotFound();
             }
 
-            return View(employee);
+            // Sets the DevExtreme fields flag to read-only within the layout partial view
+            ViewBag.IsViewMode = true;
+
+            // Reuses the Edit container layout shell to present data gracefully
+            return View("Edit", employee);
         }
 
 
@@ -121,65 +121,35 @@ namespace WebProjectMVC.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return await ReturnCreateErrorViewAsync(
-                    employee,
-                    "Please fill all required fields correctly."
-                );
+                return await ReturnCreateErrorViewAsync(employee, "Please fill all required fields correctly.");
             }
-
 
             // Employee Code validation
-            if (!string.IsNullOrWhiteSpace(employee.EmpCode)
-                && employee.EmpCode.Length < 3)
+            if (!string.IsNullOrWhiteSpace(employee.EmpCode) && employee.EmpCode.Length < 3)
             {
-                ModelState.AddModelError(
-                    "EmpCode",
-                    "Employee Code must be at least 3 characters long."
-                );
-
-                return await ReturnCreateErrorViewAsync(
-                    employee,
-                    "Invalid Employee Code length."
-                );
+                ModelState.AddModelError("EmpCode", "Employee Code must be at least 3 characters long.");
+                return await ReturnCreateErrorViewAsync(employee, "Invalid Employee Code length.");
             }
-
 
             // Salary validation
             if (employee.Salary <= 0)
             {
-                ModelState.AddModelError(
-                    "Salary",
-                    "Salary must be a positive value greater than zero."
-                );
-
-                return await ReturnCreateErrorViewAsync(
-                    employee,
-                    "Invalid salary entry."
-                );
+                ModelState.AddModelError("Salary", "Salary must be a positive value greater than zero.");
+                return await ReturnCreateErrorViewAsync(employee, "Invalid salary entry.");
             }
-
 
             // Created By
             employee.CreatedBY = "ShrutiMOre";
 
-
-            var rowsAffected =
-                await _repository.CreateAsync(employee);
-
+            var rowsAffected = await _repository.CreateAsync(employee);
 
             if (rowsAffected > 0)
             {
-                TempData["SuccessMessage"] =
-                    "Employee profile configured successfully!";
-
+                TempData["SuccessMessage"] = "Employee profile configured successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
-
-            return await ReturnCreateErrorViewAsync(
-                employee,
-                "Failed to register employee record in database systems."
-            );
+            return await ReturnCreateErrorViewAsync(employee, "Failed to register employee record in database systems.");
         }
 
 
@@ -189,8 +159,7 @@ namespace WebProjectMVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var employee =
-                await _repository.GetByIdAsync(id);
+            var employee = await _repository.GetByIdAsync(id);
 
             if (employee == null)
             {
@@ -226,13 +195,11 @@ namespace WebProjectMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var result =
-                await _repository.DeleteAsync(id);
+            var result = await _repository.DeleteAsync(id);
 
             if (result > 0)
             {
-                TempData["SuccessMessage"] =
-                    "Employee deleted successfully.";
+                TempData["SuccessMessage"] = "Employee deleted successfully.";
             }
 
             return RedirectToAction(nameof(Index));
@@ -242,15 +209,50 @@ namespace WebProjectMVC.Controllers
         // ==============================
         // Create Error View
         // ==============================
-        private async Task<IActionResult>
-            ReturnCreateErrorViewAsync(
-                Employee model,
-                string errorMessage)
+        private async Task<IActionResult> ReturnCreateErrorViewAsync(Employee model, string errorMessage)
         {
             TempData["ErrorMessage"] = errorMessage;
-
             return View("Create", model);
         }
+
+        // ==============================
+        // 1. View Record (Fixes the View button 404)
+        // ==============================
+        [HttpGet] // Catches the '/Employee/ViewRecord?id=' address from your JavaScript
+        public async Task<IActionResult> ViewRecord(int id)
+        {
+            var employee = await _repository.GetByIdAsync(id);
+
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            // Locks down the form inputs to read-only state
+            ViewBag.IsViewMode = true;
+
+            // Reuses your Edit.cshtml view layout frame
+            return View("Edit", employee);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteAsync(int slNo)
+        {
+            try
+            {
+                // Executes your Dapper repository logic
+                await _repository.DeleteAsync(slNo);
+
+                // Return success so the DevExtreme grid knows it's time to refresh
+                return Json(new { success = true, message = "Employee profile soft-deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                // Log your exception error here if needed
+                return BadRequest(new { success = false, message = "Failed to update record status." });
+            }
+        }
+
+
     }
 }
-
