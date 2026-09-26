@@ -72,8 +72,8 @@ namespace WebProjectMVC.Controllers
             var result = departments
                 .Select(x => new
                 {
-                    id = x.Id,
-                    name = x.Name
+                    slno = x.slno,
+                    Deptname = x.Deptname
                 })
                 .ToList();
 
