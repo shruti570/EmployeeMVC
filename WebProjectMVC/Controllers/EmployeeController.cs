@@ -1,6 +1,7 @@
 ﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 using WebProjectMVC.Models;
 using WebProjectMVC.Repositories;
 
@@ -18,7 +19,7 @@ namespace WebProjectMVC.Controllers
             _repository = repository;
             _departmentRepo = departmentRepo;
         }
-
+        
 
         // ==============================
         // Employee List
@@ -254,5 +255,11 @@ namespace WebProjectMVC.Controllers
         }
 
 
-    }
+
+
+
+
 }
+}
+
+

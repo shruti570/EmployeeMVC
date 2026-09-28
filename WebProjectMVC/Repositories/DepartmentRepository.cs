@@ -41,5 +41,7 @@ namespace WebProjectMVC.Repositories
                 "usp_GetDepartment",
                 commandType: CommandType.StoredProcedure);
         }
+
+        
     }
 }

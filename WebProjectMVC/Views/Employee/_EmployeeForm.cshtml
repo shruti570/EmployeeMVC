@@ -45,9 +45,9 @@
             .Placeholder("Select reporting person")
             .SearchEnabled(true)
             // Pulls directly from the backend API Stored Procedure
-            .DataSource(ds => ds.Mvc().Controller("Employee").LoadAction("GetReportingPersons").Key("id"))
-            .DisplayExpr("name")
-            .ValueExpr("id")
+            .DataSource(ds => ds.Mvc().Controller("Employee").LoadAction("GetReportingPersons").Key("reportingPersonId"))
+            .DisplayExpr("empname")
+            .ValueExpr("reportingPersonId")
             .StylingMode(EditorStylingMode.Outlined)
             .Width("100%")
             .ShowClearButton(!isViewMode)
