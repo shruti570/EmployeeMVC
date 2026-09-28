@@ -1,9 +1,10 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using System.Text.Json;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using WebProjectMVC.Models;
 using WebProjectMVC.Repositories;
+using WebProjectMVC.Services;
 
 namespace WebProjectMVC.Controllers
 {
@@ -11,15 +12,20 @@ namespace WebProjectMVC.Controllers
     {
         private readonly IEmployeeRepository _repository;
         private readonly IDepartmentRepository _departmentRepo;
+        private readonly IAlertService _alert;
+      
 
+       
         public EmployeeController(
             IEmployeeRepository repository,
-            IDepartmentRepository departmentRepo)
+            IDepartmentRepository departmentRepo,
+            IAlertService alert)
         {
             _repository = repository;
             _departmentRepo = departmentRepo;
+            _alert = alert;
         }
-        
+       
 
         // ==============================
         // Employee List
@@ -61,7 +67,6 @@ namespace WebProjectMVC.Controllers
             return Json(reportingPersons);
         }
 
-
         // ==============================
         // Get Departments
         // ==============================
@@ -73,14 +78,13 @@ namespace WebProjectMVC.Controllers
             var result = departments
                 .Select(x => new
                 {
-                    slno = x.slno,
-                    Deptname = x.Deptname
+                    id = x.slno,
+                    name = x.Deptname
                 })
                 .ToList();
 
             return Json(result);
         }
-
 
         // ==============================
         // Details (View Mode by SlNo)
@@ -120,10 +124,10 @@ namespace WebProjectMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Employee employee)
         {
-            if (!ModelState.IsValid)
-            {
-                return await ReturnCreateErrorViewAsync(employee, "Please fill all required fields correctly.");
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return await ReturnCreateErrorViewAsync(employee, "Please fill all required fields correctly.");
+            //}
 
             // Employee Code validation
             if (!string.IsNullOrWhiteSpace(employee.EmpCode) && employee.EmpCode.Length < 3)
@@ -140,13 +144,13 @@ namespace WebProjectMVC.Controllers
             }
 
             // Created By
-            employee.CreatedBY = "ShrutiMOre";
+            employee.CreatedBY = "";
 
             var rowsAffected = await _repository.CreateAsync(employee);
 
             if (rowsAffected > 0)
             {
-                TempData["SuccessMessage"] = "Employee profile configured successfully!";
+                _alert.Success("Employee created successfully!", "Done!");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -192,21 +196,41 @@ namespace WebProjectMVC.Controllers
         // ==============================
         // Delete
         // ==============================
+        // ==============================
+        // Soft Delete
+        // ==============================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _repository.DeleteAsync(id);
-
-            if (result > 0)
+            try
             {
-                TempData["SuccessMessage"] = "Employee deleted successfully.";
+                var result = await _repository.DeleteAsync(id);
+
+                if (result > 0)
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Employee deleted successfully."
+                    });
+                }
+
+                return Json(new
+                {
+                    success = false,
+                    message = "Employee not found or already deleted."
+                });
             }
-
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
         }
-
-
         // ==============================
         // Create Error View
         // ==============================
@@ -237,12 +261,12 @@ namespace WebProjectMVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteAsync(int slNo)
+        public async Task<IActionResult> DeleteAsync(int SlNo)
         {
             try
             {
                 // Executes your Dapper repository logic
-                await _repository.DeleteAsync(slNo);
+                await _repository.DeleteAsync(SlNo);
 
                 // Return success so the DevExtreme grid knows it's time to refresh
                 return Json(new { success = true, message = "Employee profile soft-deleted successfully." });

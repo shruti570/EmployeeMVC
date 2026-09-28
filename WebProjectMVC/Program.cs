@@ -1,4 +1,5 @@
 using WebProjectMVC.Repositories;
+using WebProjectMVC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,10 @@ builder.Services.AddControllersWithViews()
 
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IAlertService, AlertService>();
 
 var app = builder.Build();
 

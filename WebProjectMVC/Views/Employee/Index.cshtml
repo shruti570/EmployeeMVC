@@ -6,7 +6,6 @@
 
 <h2>Employee List</h2>
 
-<!-- Antiforgery token required to authorize our modern in-line AJAX delete request -->
 @Html.AntiForgeryToken()
 
 <a asp-controller="Employee"
@@ -28,60 +27,100 @@
     .RowAlternationEnabled(true)
     .Width("100%")
     .ShowBorders(true)
+
     .SearchPanel(s => s
         .Visible(true)
         .HighlightCaseSensitive(false))
+
     .GroupPanel(g => g
         .Visible(true))
+
     .Grouping(g => g
         .AutoExpandAll(false))
+
     .Paging(p => p
         .PageSize(10))
+
     .Pager(p => p
         .Visible(true)
         .ShowPageSizeSelector(true)
         .AllowedPageSizes(new[] { 10, 25, 50, 100 }))
+
     .Columns(columns =>
     {
-        columns.AddFor(m => m.Empname).Caption("Employee Name").DataType(GridColumnDataType.String);
-        columns.AddFor(m => m.EmpCode).Caption("Employee Code").DataType(GridColumnDataType.String);
-        columns.AddFor(m => m.ReportingPerson).Caption("Reporting Person").DataType(GridColumnDataType.String);
-        columns.AddFor(m => m.Deptname).Caption("Department").DataType(GridColumnDataType.String);
-        columns.AddFor(m => m.CreatedBY).Caption("Created BY").DataType(GridColumnDataType.String);
-        columns.AddFor(m => m.ModifiedBY).Caption("Modified BY").DataType(GridColumnDataType.String);
-        columns.AddFor(m => m.Salary).Caption("Salary").DataType(GridColumnDataType.Number);
+        columns.AddFor(m => m.Empname)
+            .Caption("Employee Name")
+            .DataType(GridColumnDataType.String);
+
+        columns.AddFor(m => m.EmpCode)
+            .Caption("Employee Code")
+            .DataType(GridColumnDataType.String);
+
+        columns.AddFor(m => m.ReportingPerson)
+            .Caption("Reporting Person")
+            .DataType(GridColumnDataType.String);
+
+        columns.AddFor(m => m.Deptname)
+            .Caption("Department")
+            .DataType(GridColumnDataType.String);
+
+        columns.AddFor(m => m.CreatedBY)
+            .Caption("Created BY")
+            .DataType(GridColumnDataType.String);
+
+        columns.AddFor(m => m.ModifiedBY)
+            .Caption("Modified BY")
+            .DataType(GridColumnDataType.String);
+
+        columns.AddFor(m => m.PhoneNumber)
+            .Caption("PhoneNumber")
+            .DataType(GridColumnDataType.Number);
+        
+            
+        columns.AddFor(m => m.Email)
+                            .Caption("Email")
+                            .DataType(GridColumnDataType.String); 
+
+
 
         columns.Add()
             .Caption("Action")
             .Width(250)
             .CellTemplate(new JS(@"
                 function(container, options) {
+
                     var id = options.data.SlNo;
                     var empName = options.data.Empname;
 
-                    // 1. VIEW BUTTON: Opens the record in full view layout mode
+                    // VIEW
                     $('<a>')
                         .attr('href', '/Employee/ViewRecord?id=' + id)
                         .addClass('btn btn-sm btn-info me-1 text-white')
                         .text('View')
                         .appendTo(container);
 
-                    // 2. EDIT BUTTON: Standard routing to the update layout screen
+                    // EDIT
                     $('<a>')
                         .attr('href', '/Employee/Edit?id=' + id)
                         .addClass('btn btn-sm btn-warning me-1')
                         .text('Edit')
                         .appendTo(container);
 
-                    // 3. DELETE BUTTON: Secure in-line event execution that doesn't trigger 404/405 errors
+                    // DELETE
                     $('<button>')
                         .attr('type', 'button')
                         .addClass('btn btn-sm btn-danger')
                         .text('Delete')
                         .on('click', function() {
-                            if (confirm('Are you sure you want to delete employee: ' + empName + '?')) {
+
+                            if (confirm(
+                                'Are you sure you want to delete employee: '
+                                + empName + '?'
+                            )) {
+
                                 deleteEmployeeRecord(id);
                             }
+
                         })
                         .appendTo(container);
                 }
@@ -89,23 +128,43 @@
     })
 )
 
-<!-- JavaScript handler to securely execute the row removal request -->
 <script>
     function deleteEmployeeRecord(id) {
+
         var token = $('input[name="__RequestVerificationToken"]').val();
 
         $.ajax({
             url: '/Employee/Delete?id=' + id,
             type: 'POST',
+
             headers: {
-                "RequestVerificationToken": token
+                'RequestVerificationToken': token
             },
+
             success: function (response) {
-                // Instantly reloads the DevExtreme grid display asynchronously
-                $("#employeeGrid").dxDataGrid("instance").refresh();
+
+                console.log(response);
+
+                if (response.success) {
+
+                    alert(response.message);
+
+                    $('#employeeGrid')
+                        .dxDataGrid('instance')
+                        .refresh();
+
+                } else {
+
+                    alert(response.message);
+                }
             },
-            error: function (xhr, status, error) {
-                alert("Failed to drop employee record from server systems: " + error);
+
+            error: function (xhr) {
+
+                console.log("STATUS:", xhr.status);
+                console.log("RESPONSE:", xhr.responseText);
+
+                alert("Delete failed. Check browser console.");
             }
         });
     }

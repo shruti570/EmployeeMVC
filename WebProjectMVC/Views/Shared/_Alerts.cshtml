@@ -1,0 +1,14 @@
+﻿@using WebProjectMVC.Services
+@inject IAlertService AlertService
+
+@foreach (var alert in AlertService.GetAlerts())
+{
+    <div class="alert @alert.CssClass alert-dismissible fade show" role="alert">
+        @if (!string.IsNullOrEmpty(alert.Title))
+        {
+            <strong>@alert.Title</strong>
+        }
+        @alert.Message
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}

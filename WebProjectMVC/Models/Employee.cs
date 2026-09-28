@@ -41,6 +41,10 @@ namespace WebProjectMVC.Models
 
         public string lmodifyby { get; set; }
 
+        public string PhoneNumber { get; set; }
+
+        public string  Email { get; set; }
+
         public DateTime lmodifydt { get; set; }
 
         public int deluid { get; set; }

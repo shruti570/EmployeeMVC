@@ -44,10 +44,12 @@
             .Label("Reporting Person")
             .Placeholder("Select reporting person")
             .SearchEnabled(true)
-            // Pulls directly from the backend API Stored Procedure
-            .DataSource(ds => ds.Mvc().Controller("Employee").LoadAction("GetReportingPersons").Key("reportingPersonId"))
-            .DisplayExpr("empname")
-            .ValueExpr("reportingPersonId")
+            .DataSource(ds => ds.Mvc()
+                .Controller("Employee")
+                .LoadAction("GetReportingPersons")
+                .Key("id"))
+            .DisplayExpr("name")
+            .ValueExpr("id")
             .StylingMode(EditorStylingMode.Outlined)
             .Width("100%")
             .ShowClearButton(!isViewMode)
@@ -60,10 +62,12 @@
             .Label("Department")
             .Placeholder("Select department")
             .SearchEnabled(true)
-            // Pulls directly from the backend API Stored Procedure
-            .DataSource(ds => ds.Mvc().Controller("Employee").LoadAction("GetDepartments").Key("slno"))
-            .DisplayExpr("Deptname")
-            .ValueExpr("slno")
+            .DataSource(ds => ds.Mvc()
+                .Controller("Employee")
+                .LoadAction("GetDepartments")
+                .Key("id"))
+            .DisplayExpr("name")
+            .ValueExpr("id")
             .StylingMode(EditorStylingMode.Outlined)
             .Width("100%")
             .ShowClearButton(!isViewMode)
@@ -84,6 +88,39 @@
             .ShowClearButton(!isViewMode)
             .ReadOnly(isViewMode)
             .Min(0)
+        )
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+    <div style="max-width: 320px; width: 100%;">
+        @(Html.DevExtreme().TextBoxFor(x => x.PhoneNumber)
+            .ID("PhoneNumber")
+            .Label("Phone Number")
+            .Placeholder("Enter phone number")
+            .Mode(TextBoxMode.Tel)
+            .StylingMode(EditorStylingMode.Outlined)
+            .Width("100%")
+            .ShowClearButton(!isViewMode)
+            .ReadOnly(isViewMode)
+            .ValidationRules(v => {
+                v.AddPattern().Pattern("^[0-9+\\-\\s]{10,15}$").Message("Enter a valid phone number");
+            })
+        )
+    </div>
+    <div style="max-width: 320px; width: 100%;">
+        @(Html.DevExtreme().TextBoxFor(x => x.Email)
+            .ID("Email")
+            .Label("Email")
+            .Placeholder("Enter email address")
+            .Mode(TextBoxMode.Email)
+            .StylingMode(EditorStylingMode.Outlined)
+            .Width("100%")
+            .ShowClearButton(!isViewMode)
+            .ReadOnly(isViewMode)
+            .ValidationRules(v => {
+                v.AddEmail().Message("Enter a valid email address");
+            })
         )
     </div>
 </div>

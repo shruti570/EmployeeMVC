@@ -24,12 +24,12 @@ namespace WebProjectMVC.Repositories
                 commandType: CommandType.StoredProcedure);
         }
 
-        public async Task<Employee?> GetByIdAsync(int slNo)
+        public async Task<Employee?> GetByIdAsync(int SlNo)
         {
             using var connection = CreateConnection();
             return await connection.QuerySingleOrDefaultAsync<Employee>(
                 "usp_GetEmployeeBySlno",
-                new { SlNo = slNo },
+                new { SlNo = SlNo },
                 commandType: CommandType.StoredProcedure);
         }
 
@@ -38,12 +38,17 @@ namespace WebProjectMVC.Repositories
             using var connection = CreateConnection();
             var parameters = new
             {
-                emp.EmpCode,
+             
                 emp.Empname,
+                emp.EmpCode,
                 emp.ReportingPersonId,
                 emp.DepartmentId,
+                emp.CreatedBY,
                 emp.Salary,
-                emp.CreatedBY
+                emp.PhoneNumber,
+                emp.Email
+
+               
             };
             return await connection.ExecuteAsync(
                 "usp_InsertEmployee",
@@ -84,13 +89,14 @@ namespace WebProjectMVC.Repositories
         public async Task<int> DeleteAsync(int slNo)
         {
             using var connection = CreateConnection();
+
             return await connection.ExecuteAsync(
                 "usp_DeleteEmp",
                 new { SlNo = slNo },
                 commandType: CommandType.StoredProcedure);
         }
 
-        
+
 
 
     }
