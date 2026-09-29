@@ -14,8 +14,6 @@ namespace WebProjectMVC.Controllers
         private readonly IDepartmentRepository _departmentRepo;
         private readonly IAlertService _alert;
       
-
-       
         public EmployeeController(
             IEmployeeRepository repository,
             IDepartmentRepository departmentRepo,
@@ -46,7 +44,6 @@ namespace WebProjectMVC.Controllers
 
             return Json(DataSourceLoader.Load(employees, loadOptions));
         }
-
 
         // ==============================
         // Get Reporting Persons
@@ -106,7 +103,6 @@ namespace WebProjectMVC.Controllers
             return View("Edit", employee);
         }
 
-
         // ==============================
         // Create - GET
         // ==============================
@@ -115,7 +111,6 @@ namespace WebProjectMVC.Controllers
         {
             return View(new Employee());
         }
-
 
         // ==============================
         // Create - POST
