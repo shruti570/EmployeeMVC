@@ -80,6 +80,12 @@
                             .Caption("Email")
                             .DataType(GridColumnDataType.String); 
 
+
+        columns.AddFor(m => m.StateName)
+    .Caption("State")
+    .DataType(GridColumnDataType.String);
+
+
         columns.Add()
             .Caption("Action")
             .Width(250)

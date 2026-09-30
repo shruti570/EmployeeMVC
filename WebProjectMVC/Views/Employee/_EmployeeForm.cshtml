@@ -1,126 +1,144 @@
-﻿@model WebProjectMVC.Models.Employee
+﻿@using System.Text.Json
+@using DevExtreme.AspNet.Mvc
+@model WebProjectMVC.Models.Employee
 
 @{
-    // Check if the page is being opened in a read-only View mode
+    // True when the page is opened in read-only View mode
     bool isViewMode = ViewBag.IsViewMode ?? false;
 }
 
 <!-- Hidden field to keep track of the selected record's SlNo during View/Edit updates -->
 @Html.HiddenFor(x => x.SlNo)
 
-<!-- Row 1 -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div style="max-width: 250px; width: 100%;">
-        @(Html.DevExtreme().TextBoxFor(x => x.Empname)
-            .ID("Empname")
-            .Label("Employee Name*")
-            .Placeholder("Enter employee name")
-            .StylingMode(EditorStylingMode.Outlined)
-            .Width("100%")
-            .ShowClearButton(!isViewMode)
-            .ReadOnly(isViewMode)
-            .ValidationRules(v => { v.AddRequired().Message("Employee name is required"); })
-        )
-    </div>
-    <div style="max-width: 250px; width: 100%;">
-        @(Html.DevExtreme().TextBoxFor(x => x.EmpCode)
-            .ID("EmpCode")
-            .Label("Employee Code*")
-            .Placeholder("Enter employee code")
-            .StylingMode(EditorStylingMode.Outlined)
-            .Width("100%")
-            .ShowClearButton(!isViewMode)
-            .ReadOnly(isViewMode)
-            .ValidationRules(v => { v.AddRequired().Message("Employee code is required"); })
-        )
-    </div>
-</div>
+<div class="card shadow-sm mb-3">
+    <div class="card-body p-4">
 
-<!-- Row 2 -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-    <div style="max-width: 320px; width: 100%;">
-        @(Html.DevExtreme().SelectBoxFor(x => x.ReportingPersonId)
-            .ID("ReportingPersonId")
-            .Label("Reporting Person")
-            .Placeholder("Select reporting person")
-            .SearchEnabled(true)
-            .DataSource(ds => ds.Mvc()
-                .Controller("Employee")
-                .LoadAction("GetReportingPersons")
-                .Key("id"))
-            .DisplayExpr("name")
-            .ValueExpr("id")
-            .StylingMode(EditorStylingMode.Outlined)
-            .Width("100%")
-            .ShowClearButton(!isViewMode)
-            .ReadOnly(isViewMode)
-        )
-    </div>
-    <div style="max-width: 320px; width: 100%;">
-        @(Html.DevExtreme().SelectBoxFor(x => x.DepartmentId)
-            .ID("DepartmentId")
-            .Label("Department")
-            .Placeholder("Select department")
-            .SearchEnabled(true)
-            .DataSource(ds => ds.Mvc()
-                .Controller("Employee")
-                .LoadAction("GetDepartments")
-                .Key("id"))
-            .DisplayExpr("name")
-            .ValueExpr("id")
-            .StylingMode(EditorStylingMode.Outlined)
-            .Width("100%")
-            .ShowClearButton(!isViewMode)
-            .ReadOnly(isViewMode)
-        )
-    </div>
-</div>
+        <!-- Row 1: Name, Code, Reporting Person, Department -->
+        <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6 col-lg-3">
+                @(Html.DevExtreme().TextBoxFor(x => x.Empname)
+                    .ID("Empname")
+                    .Label("Employee Name*")
+                    .Placeholder("Enter employee name")
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%")
+                    .ShowClearButton(!isViewMode)
+                    .ReadOnly(isViewMode)
+                    .ValidationRules(v => { v.AddRequired().Message("Employee name is required"); })
+                )
+            </div>
+            <div class="col-12 col-sm-6 col-lg-3">
+                @(Html.DevExtreme().TextBoxFor(x => x.EmpCode)
+                    .ID("EmpCode")
+                    .Label("Employee Code*")
+                    .Placeholder("Enter employee code")
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%")
+                    .ShowClearButton(!isViewMode)
+                    .ReadOnly(isViewMode)
+                    .ValidationRules(v => { v.AddRequired().Message("Employee code is required"); })
+                )
+            </div>
+            @(Html.DevExtreme().SelectBoxFor(x => x.ReportingPersonId)
+    .ID("ReportingPersonId")
+    .Label("Reporting Person")
+    .Placeholder("Select Reporting Person")
+    .SearchEnabled(true)
+    .DataSource(ds => ds.Mvc()
+        .Controller("Employee")
+        .LoadAction("GetReportingPerson")
+        .Key("id"))
+    .DisplayExpr("Empname")
+    .ValueExpr("id")
+    .StylingMode(EditorStylingMode.Outlined)
+    .Width("100%")
+    .ShowClearButton(!isViewMode)
+    .ReadOnly(isViewMode)
+)
+            <div class="col-12 col-sm-6 col-lg-3">
+                @(Html.DevExtreme().SelectBoxFor(x => x.DepartmentId)
+                    .ID("DepartmentId")
+                    .Label("Department")
+                    .Placeholder("Select department")
+                    .SearchEnabled(true)
+                    .DataSource(ds => ds.Mvc()
+                        .Controller("Employee")
+                        .LoadAction("GetDepartments")
+                        .Key("id"))
+                    .DisplayExpr("name")
+                    .ValueExpr("id")
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%")
+                    .ShowClearButton(!isViewMode)
+                    .ReadOnly(isViewMode)
+                )
+            </div>
+        </div>
 
-<!-- Row 3 -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-    <div style="max-width: 320px; width: 100%;">
-        @(Html.DevExtreme().NumberBoxFor(x => x.Salary)
-            .ID("Salary")
-            .Label("Salary")
-            .Placeholder("Enter salary")
-            .StylingMode(EditorStylingMode.Outlined)
-            .Width("100%")
-            .ShowClearButton(!isViewMode)
-            .ReadOnly(isViewMode)
-            .Min(0)
-        )
-    </div>
-</div>
+        <!-- Row 2: Salary, Phone, Email -->
+        <div class="row g-3">
+            <div class="col-12 col-sm-6 col-lg-4">
+                @(Html.DevExtreme().NumberBoxFor(x => x.Salary)
+                    .ID("Salary")
+                    .Label("Salary")
+                    .Placeholder("Enter salary")
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%")
+                    .ShowClearButton(!isViewMode)
+                    .ReadOnly(isViewMode)
+                    .Min(0)
+                )
+            </div>
+            <div class="col-12 col-sm-6 col-lg-4">
+                @(Html.DevExtreme().TextBoxFor(x => x.PhoneNumber)
+                    .ID("PhoneNumber")
+                    .Label("Phone Number")
+                    .Placeholder("Enter phone number")
+                    .Mode(TextBoxMode.Tel)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%")
+                    .ShowClearButton(!isViewMode)
+                    .ReadOnly(isViewMode)
+                    .ValidationRules(v => {
+                        v.AddPattern().Pattern("^[0-9+\\-\\s]{10,15}$").Message("Enter a valid phone number");
+                    })
+                )
+            </div>
+            <div class="col-12 col-sm-6 col-lg-4">
+                @(Html.DevExtreme().TextBoxFor(x => x.Email)
+                    .ID("Email")
+                    .Label("Email")
+                    .Placeholder("Enter email address")
+                    .Mode(TextBoxMode.Email)
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%")
+                    .ShowClearButton(!isViewMode)
+                    .ReadOnly(isViewMode)
+                    .ValidationRules(v => {
+                        v.AddEmail().Message("Enter a valid email address");
+                    })
+                )
+            </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-    <div style="max-width: 320px; width: 100%;">
-        @(Html.DevExtreme().TextBoxFor(x => x.PhoneNumber)
-            .ID("PhoneNumber")
-            .Label("Phone Number")
-            .Placeholder("Enter phone number")
-            .Mode(TextBoxMode.Tel)
-            .StylingMode(EditorStylingMode.Outlined)
-            .Width("100%")
-            .ShowClearButton(!isViewMode)
-            .ReadOnly(isViewMode)
-            .ValidationRules(v => {
-                v.AddPattern().Pattern("^[0-9+\\-\\s]{10,15}$").Message("Enter a valid phone number");
-            })
-        )
-    </div>
-    <div style="max-width: 320px; width: 100%;">
-        @(Html.DevExtreme().TextBoxFor(x => x.Email)
-            .ID("Email")
-            .Label("Email")
-            .Placeholder("Enter email address")
-            .Mode(TextBoxMode.Email)
-            .StylingMode(EditorStylingMode.Outlined)
-            .Width("100%")
-            .ShowClearButton(!isViewMode)
-            .ReadOnly(isViewMode)
-            .ValidationRules(v => {
-                v.AddEmail().Message("Enter a valid email address");
-            })
-        )
+            <div class="col-12 col-sm-6 col-lg-3">
+                @(Html.DevExtreme().SelectBoxFor(x => x.StateId)
+                    .ID("StateId")
+                    .Label("State")
+                    .Placeholder("Select State")
+                    .SearchEnabled(true)
+                    .DataSource(ds => ds.Mvc()
+                        .Controller("Employee")
+                        .LoadAction("GetState")
+                        .Key("id"))
+                    .DisplayExpr("StateName")
+                    .ValueExpr("id")
+                    .StylingMode(EditorStylingMode.Outlined)
+                    .Width("100%")
+                    .ShowClearButton(!isViewMode)
+                    .ReadOnly(isViewMode)
+                )
+            </div>
+        </div>
+
     </div>
 </div>

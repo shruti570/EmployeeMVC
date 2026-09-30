@@ -57,5 +57,34 @@ namespace WebProjectMVC.Models
         [DisplayFormat(DataFormatString = "{0:F2}", ApplyFormatInEditMode = true)]  
         [Display(Name = "Salary")]
         public decimal Salary { get; set; }
+
+
+        //[Required(ErrorMessage = "StateName is required")]
+        //[Display(Name = "StateName")]
+        public int StateId { get; set; }
+
+        public int DistrictId { get; set; }
+
+        public int CityId { get; set; }
+
+        public int PincodeId { get; set; }
+
+        public int AreaId { get; set; }
+
+
+        public string StateName { get; set; }
+
+        public string DistrictName { get; set; }
+
+        public string CityName { get; set; }
+
+        public string Pincode { get; set; }
+
+
+        public string AreaName { get; set; }
+
+
+
+
     }
 }

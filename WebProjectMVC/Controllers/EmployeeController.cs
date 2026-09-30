@@ -49,14 +49,14 @@ namespace WebProjectMVC.Controllers
         // Get Reporting Persons
         // ==============================
         [HttpGet]
-        public async Task<IActionResult> GetReportingPersons()
+        public async Task<IActionResult> GetReportingPerson()
         {
             var employees = await _repository.GetAllAsync();
 
             var reportingPersons = employees
                 .Select(x => new
                 {
-                    id = x.SlNo,
+                    id = x.ReportingPersonId,
                     name = x.Empname
                 })
                 .ToList();
@@ -274,11 +274,27 @@ namespace WebProjectMVC.Controllers
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> GetState()
+        {
+            var employees = await _repository.GetStateAsync();
+
+            var states = employees
+                .Select(x => new
+                {
+                    id = x.StateId,
+                    name = x.StateName
+                })
+                .ToList();
+
+            return Json(states);
+        }
 
 
 
 
-}
+
+    }
 }
 
 

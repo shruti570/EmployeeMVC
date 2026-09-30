@@ -46,7 +46,8 @@ namespace WebProjectMVC.Repositories
                 emp.CreatedBY,
                 emp.Salary,
                 emp.PhoneNumber,
-                emp.Email
+                emp.Email,
+                emp.StateId
 
                
             };
@@ -93,6 +94,27 @@ namespace WebProjectMVC.Repositories
             return await connection.ExecuteAsync(
                 "usp_DeleteEmp",
                 new { SlNo = slNo },
+                commandType: CommandType.StoredProcedure);
+        }
+
+
+        public async Task<IEnumerable<Employee>> GetStateAsync()
+        {
+            using var connection = CreateConnection();
+
+            return await connection.QueryAsync<Employee>(
+                "usp_GetStates",
+                commandType: CommandType.StoredProcedure);
+        }
+
+
+
+        public async Task<IEnumerable<Employee>> GetReportingPersonAsync()
+        {
+            using var connection = CreateConnection();
+
+            return await connection.QueryAsync<Employee>(
+                "usp_GetReportingPerson",
                 commandType: CommandType.StoredProcedure);
         }
 
