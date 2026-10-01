@@ -47,9 +47,11 @@ namespace WebProjectMVC.Repositories
                 emp.Salary,
                 emp.PhoneNumber,
                 emp.Email,
-                emp.StateId
-
-               
+                emp.StateId,
+                emp.DistrictId,
+                emp.CityId,
+                emp.PincodeId,
+                emp.AreaId
             };
             return await connection.ExecuteAsync(
                 "usp_InsertEmployee",
@@ -115,6 +117,59 @@ namespace WebProjectMVC.Repositories
 
             return await connection.QueryAsync<Employee>(
                 "usp_GetReportingPerson",
+                commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<IEnumerable<Employee>> GetDistrictAsync(int stateId)
+        {
+            using var connection = CreateConnection();
+
+            return await connection.QueryAsync<Employee>(
+                "usp_GetDistrict",
+                new
+                {
+                    StateId = stateId
+                },
+                commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<IEnumerable<Employee>> GetCityAsync(int DistrictId)
+        {
+            using var connection = CreateConnection();
+
+            return await connection.QueryAsync<Employee>(
+                "usp_GetCity",
+                new
+                {
+                    DistrictId = DistrictId
+                },
+                commandType: CommandType.StoredProcedure);
+        }
+
+
+        public async Task<IEnumerable<Employee>> GetPincodeAsync(int CityId)
+        {
+            using var connection = CreateConnection();
+
+            return await connection.QueryAsync<Employee>(
+                "usp_GetPincode",
+                new
+                {
+                    CityId = CityId
+                },
+                commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<IEnumerable<Employee>> GetAreaAsync(int pincodeId)
+        {
+            using var connection = CreateConnection();
+
+            return await connection.QueryAsync<Employee>(
+                "usp_GetArea",
+                new
+                {
+                    PincodeId = pincodeId
+                },
                 commandType: CommandType.StoredProcedure);
         }
 

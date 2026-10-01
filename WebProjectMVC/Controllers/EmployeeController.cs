@@ -56,7 +56,7 @@ namespace WebProjectMVC.Controllers
             var reportingPersons = employees
                 .Select(x => new
                 {
-                    id = x.ReportingPersonId,
+                    id = x.SlNo,
                     name = x.Empname
                 })
                 .ToList();
@@ -70,7 +70,7 @@ namespace WebProjectMVC.Controllers
         [HttpGet]
         public async Task<IActionResult> GetDepartments()
         {
-            var departments = await _departmentRepo.GetAllAsync();
+            var departments = await _departmentRepo.GetDepartmentsAsync();
 
             var result = departments
                 .Select(x => new
@@ -292,7 +292,72 @@ namespace WebProjectMVC.Controllers
 
 
 
+        [HttpGet]
+        public async Task<IActionResult> GetDistrict(int stateId)
+        {
+            var employees = await _repository.GetDistrictAsync(stateId);
 
+            var district = employees
+                .Select(x => new
+                {
+                    id = x.DistrictId,
+                    name = x.DistrictName
+                })
+                .ToList();
+
+            return Json(district);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetCity(int DistrictId)
+        {
+            var employees = await _repository.GetCityAsync(DistrictId);
+
+            var City = employees
+                .Select(x => new
+                {
+                    id = x.CityId,
+                    name = x.CityName
+                })
+                .ToList();
+
+            return Json(City);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetPincode(int CityId)
+        {
+            var employees = await _repository.GetPincodeAsync( CityId);
+
+            var Pincode = employees
+                .Select(x => new
+                {
+                    id = x.PincodeId,
+                    name = x.Pincode
+                })
+                .ToList();
+
+            return Json(Pincode);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetArea(int PincodeId)
+        {
+            var employees = await _repository.GetAreaAsync( PincodeId);
+
+            var Area = employees
+                .Select(x => new
+                {
+                    id = x.AreaId,
+                    name = x.AreaName
+                })
+                .ToList();
+
+            return Json(Area);
+        }
 
     }
 }

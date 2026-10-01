@@ -35,8 +35,8 @@ namespace WebProjectMVC.Models
 
        
         public string ReportingPerson { get; set; }
-
        
+
         public string Deptname { get; set; }
 
         public string lmodifyby { get; set; }
@@ -82,6 +82,8 @@ namespace WebProjectMVC.Models
 
 
         public string AreaName { get; set; }
+
+      
 
 
 

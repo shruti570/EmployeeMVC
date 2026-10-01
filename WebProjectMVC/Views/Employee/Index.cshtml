@@ -85,6 +85,22 @@
     .Caption("State")
     .DataType(GridColumnDataType.String);
 
+        columns.AddFor(m => m.DistrictName)
+    .Caption("DistrictName")
+    .DataType(GridColumnDataType.String);
+
+        columns.AddFor(m => m.CityName)
+    .Caption("CityName")
+    .DataType(GridColumnDataType.String);
+
+        columns.AddFor(m => m.Pincode)
+    .Caption("Pincode")
+    .DataType(GridColumnDataType.String);
+
+        columns.AddFor(m => m.AreaName)
+    .Caption("AreaName")
+    .DataType(GridColumnDataType.String);
+
 
         columns.Add()
             .Caption("Action")

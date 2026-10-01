@@ -4,12 +4,15 @@ using WebProjectMVC.Models;
 namespace WebProjectMVC.Repositories
 {
     public interface IDepartmentRepository
-    {
-        Task<IEnumerable<Employee>> GetDeptAsync();
-       
-        Task<Employee?> GetDeptByIdAsync(int slNo);
 
-        Task<IEnumerable<Department>> GetAllAsync();
+
+    {
+        Task<IEnumerable<Department>> GetDeptAsync();
+     
+
+        Task<Department?> GetDeptByIdAsync(int slNo);
+
+        Task<IEnumerable<Department>> GetDepartmentsAsync();
 
 
 
